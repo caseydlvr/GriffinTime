@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/secondaryDarkColor</item>
         <item name="android:colorBackground">@color/primaryColor</item>
         <item name="android:colorButtonNormal">@color/secondaryColor</item>
-        <item name="android:textColor">#EEEEEE</item>
+        <item name="android:textColor">@color/secondaryTextColor</item>
     </style>
 
 </resources>
