@@ -3,8 +3,10 @@ package caseydlvr.griffintime;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int NOTIFICATION_ID = 1;
     private static final String NOTIFICATION_CHANNEL_ID = "my_notification_channel";
+    private static final String KEY_NEXT = "next_key";
 
     private GriffinTime mCurrentTime;
     private GriffinTimes mGriffinTimes;
@@ -42,6 +45,25 @@ public class MainActivity extends AppCompatActivity {
         mCurrentTime = mGriffinTimes.getCurrent();
         updateViews();
         setupNotifications();
+
+        // handling next from notification
+        // should be able to register the BroadcastReceiver in the app manifest
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(KEY_NEXT);
+
+        BroadcastReceiver receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(KEY_NEXT)) {
+                    nextTime();
+                }
+            }
+        };
+
+        // do I need to unregister this at some point? unregisterReceiver()
+        // get error about this Activity leaking the IntentReceiver when restarting the app
+        registerReceiver(receiver, filter);
+
     }
 
     private void updateViews() {
@@ -55,12 +77,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupNotifications() {
+        Intent nextIntent = new Intent(KEY_NEXT);
+        PendingIntent nextPendingIntent = PendingIntent.getBroadcast(this, 0, nextIntent, 0);
+
         mBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_clock)
                 .setContentTitle(mCurrentTime.getTime())
-                .setContentText(mCurrentTime.getNextCriteria());
-
-        // .addAction(icon, title, intent) for an action button in the notification
+                .setContentText(mCurrentTime.getNextCriteria())
+                .addAction(android.R.drawable.ic_media_play, "Yes", nextPendingIntent);
 
         mNotifyMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
