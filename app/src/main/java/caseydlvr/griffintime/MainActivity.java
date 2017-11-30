@@ -22,7 +22,8 @@ import butterknife.OnClick;
 public class MainActivity extends AppCompatActivity {
 
     private static final int NOTIFICATION_ID = 1;
-    private static final String NOTIFICATION_CHANNEL_ID = "my_notification_channel";
+    private static final String NOTIFICATION_CHANNEL_ID = "time_channel";
+    private static final String NOTIFICATION_CHANNEL_NAME = "Current time notification";
     private static final String KEY_NEXT = "next_key";
 
     private GriffinTime mCurrentTime;
@@ -78,36 +79,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupNotifications() {
-        Intent nextIntent = new Intent(KEY_NEXT);
-        PendingIntent nextPendingIntent = PendingIntent.getBroadcast(this, 0, nextIntent, 0);
-
-        mBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_clock)
-                .setContentTitle(mCurrentTime.getTime())
-                .setContentText(mCurrentTime.getNextCriteria())
-                .addAction(android.R.drawable.ic_media_play, "Yes", nextPendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_MIN)
-                .setCategory(Notification.CATEGORY_STATUS);
-
         mNotifyMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             mChannel = new NotificationChannel(
                     NOTIFICATION_CHANNEL_ID,
-                    "my notifications",
+                    NOTIFICATION_CHANNEL_NAME,
                     NotificationManager.IMPORTANCE_MIN);
 
-            mChannel.setDescription("Channel Description");
-//            mChannel.enableLights(true);
-//            mChannel.setLightColor(Color.RED);
-//            mChannel.enableVibration(true);
-//            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+            mChannel.enableVibration(false);
 
             mNotifyMgr.createNotificationChannel(mChannel);
         }
 
-        Intent resultIntent = new Intent(this, MainActivity.class);
+        // Intent for using the next action from the notification
+        Intent nextIntent = new Intent(KEY_NEXT);
+        PendingIntent nextPendingIntent = PendingIntent.getBroadcast(this, 0, nextIntent, 0);
 
+        // Intent for clicking the notification
+        Intent resultIntent = new Intent(this, MainActivity.class);
         PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(
                         this,
@@ -116,7 +106,14 @@ public class MainActivity extends AppCompatActivity {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
-        mBuilder.setContentIntent(resultPendingIntent);
+        mBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_clock)
+                .setContentTitle(mCurrentTime.getTime())
+                .setContentText(mCurrentTime.getNextCriteria())
+                .addAction(android.R.drawable.ic_media_play, "Yes", nextPendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_MIN)
+                .setCategory(Notification.CATEGORY_STATUS)
+                .setContentIntent(resultPendingIntent);
     }
 
     @OnClick (R.id.nextButton)
