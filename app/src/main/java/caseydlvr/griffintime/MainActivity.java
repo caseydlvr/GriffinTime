@@ -1,5 +1,6 @@
 package caseydlvr.griffintime;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -84,7 +85,9 @@ public class MainActivity extends AppCompatActivity {
                 .setSmallIcon(R.drawable.ic_clock)
                 .setContentTitle(mCurrentTime.getTime())
                 .setContentText(mCurrentTime.getNextCriteria())
-                .addAction(android.R.drawable.ic_media_play, "Yes", nextPendingIntent);
+                .addAction(android.R.drawable.ic_media_play, "Yes", nextPendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_MIN)
+                .setCategory(Notification.CATEGORY_STATUS);
 
         mNotifyMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -92,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
             mChannel = new NotificationChannel(
                     NOTIFICATION_CHANNEL_ID,
                     "my notifications",
-                    NotificationManager.IMPORTANCE_DEFAULT);
+                    NotificationManager.IMPORTANCE_MIN);
 
             mChannel.setDescription("Channel Description");
 //            mChannel.enableLights(true);
