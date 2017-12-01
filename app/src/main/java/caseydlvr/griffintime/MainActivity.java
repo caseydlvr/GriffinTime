@@ -110,9 +110,10 @@ public class MainActivity extends AppCompatActivity {
                 .setSmallIcon(R.drawable.ic_clock)
                 .setContentTitle(mCurrentTime.getTime())
                 .setContentText(mCurrentTime.getNextCriteria())
-                .addAction(android.R.drawable.ic_media_play, "Yes", nextPendingIntent)
+                .addAction(R.drawable.ic_stat_check, getString(R.string.notification_next_action), nextPendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setCategory(Notification.CATEGORY_STATUS)
+                .setOngoing(true)
                 .setContentIntent(resultPendingIntent);
     }
 
