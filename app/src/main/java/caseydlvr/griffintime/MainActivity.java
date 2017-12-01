@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     private NotificationCompat.Builder mBuilder;
     private NotificationManager mNotifyMgr;
-    private NotificationChannel mChannel;
+    private BroadcastReceiver mNextReceiver;
 
     @BindView(R.id.timeText) TextView mTimeText;
     @BindView(R.id.nextText) TextView mNextText;
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction(KEY_NEXT);
 
-        BroadcastReceiver receiver = new BroadcastReceiver() {
+        mNextReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals(KEY_NEXT)) {
@@ -64,8 +64,14 @@ public class MainActivity extends AppCompatActivity {
 
         // do I need to unregister this at some point? unregisterReceiver()
         // get error about this Activity leaking the IntentReceiver when restarting the app
-        registerReceiver(receiver, filter);
+        registerReceiver(mNextReceiver, filter);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mNextReceiver);
     }
 
     private void updateViews() {
@@ -82,14 +88,14 @@ public class MainActivity extends AppCompatActivity {
         mNotifyMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            mChannel = new NotificationChannel(
+            NotificationChannel channel = new NotificationChannel(
                     NOTIFICATION_CHANNEL_ID,
                     NOTIFICATION_CHANNEL_NAME,
                     NotificationManager.IMPORTANCE_MIN);
 
-            mChannel.enableVibration(false);
+            channel.enableVibration(false);
 
-            mNotifyMgr.createNotificationChannel(mChannel);
+            mNotifyMgr.createNotificationChannel(channel);
         }
 
         // Intent for using the next action from the notification
