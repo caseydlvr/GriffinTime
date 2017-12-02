@@ -68,8 +68,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        // do I need to unregister this at some point? unregisterReceiver()
-        // get error about this Activity leaking the IntentReceiver when restarting the app
         registerReceiver(mNextReceiver, filter);
 
     }
@@ -93,6 +91,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        // normally should be in onPause, but then notification action won't work
+        // unless activity is open. This is a hack to keep the notification action working
+        // even when the Activity is paused/stopped until I work out some sort of service to
+        // handle the notification action
         unregisterReceiver(mNextReceiver);
     }
 
