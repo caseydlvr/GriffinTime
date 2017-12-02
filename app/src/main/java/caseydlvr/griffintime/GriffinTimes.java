@@ -48,4 +48,16 @@ public class GriffinTimes {
     public GriffinTime getCurrent() {
         return mGriffinTimes[mCurrentTime];
     }
+
+    public int getCurrentInt() {
+        return mCurrentTime;
+    }
+
+    public GriffinTime get(int i) {
+        return mGriffinTimes[i];
+    }
+
+    public void setCurrentTime(int i) {
+        mCurrentTime = i;
+    }
 }

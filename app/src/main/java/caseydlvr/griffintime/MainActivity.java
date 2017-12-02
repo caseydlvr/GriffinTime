@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String NOTIFICATION_CHANNEL_ID = "time_channel";
     private static final String NOTIFICATION_CHANNEL_NAME = "Current time notification";
     private static final String KEY_NEXT = "next_key";
+    private static final String PREFS_FILE = "caseydlvr.griffintime.preferences";
+    private static final String KEY_SAVED_TIME = "key_saved_time";
 
     private GriffinTime mCurrentTime;
     private GriffinTimes mGriffinTimes;
@@ -32,6 +35,9 @@ public class MainActivity extends AppCompatActivity {
     private NotificationCompat.Builder mBuilder;
     private NotificationManager mNotifyMgr;
     private BroadcastReceiver mNextReceiver;
+
+    private SharedPreferences mSharedPreferences;
+    private SharedPreferences.Editor mPrefEditor;
 
     @BindView(R.id.timeText) TextView mTimeText;
     @BindView(R.id.nextText) TextView mNextText;
@@ -43,9 +49,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        mSharedPreferences = getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
+        mPrefEditor = mSharedPreferences.edit();
         mGriffinTimes = new GriffinTimes();
-        mCurrentTime = mGriffinTimes.getCurrent();
-        updateViews();
         setupNotifications();
 
         // handling next from notification
@@ -66,6 +72,22 @@ public class MainActivity extends AppCompatActivity {
         // get error about this Activity leaking the IntentReceiver when restarting the app
         registerReceiver(mNextReceiver, filter);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mGriffinTimes.setCurrentTime(mSharedPreferences.getInt(KEY_SAVED_TIME, 0));
+        mCurrentTime = mGriffinTimes.getCurrent();
+        updateViews();
+        updateNotification();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mPrefEditor.putInt(KEY_SAVED_TIME, mGriffinTimes.getCurrentInt());
+        mPrefEditor.apply();
     }
 
     @Override
@@ -114,8 +136,6 @@ public class MainActivity extends AppCompatActivity {
 
         mBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_clock)
-                .setContentTitle(mCurrentTime.getTime())
-                .setContentText(mCurrentTime.getNextCriteria())
                 .addAction(R.drawable.ic_stat_check, getString(R.string.notification_next_action), nextPendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setCategory(Notification.CATEGORY_STATUS)
