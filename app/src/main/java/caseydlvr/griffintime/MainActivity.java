@@ -84,8 +84,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        mPrefEditor.putInt(KEY_SAVED_TIME, mGriffinTimes.getCurrentInt());
-        mPrefEditor.apply();
+        persistCurrentTime();
     }
 
     @Override
@@ -145,11 +144,17 @@ public class MainActivity extends AppCompatActivity {
                 .setContentIntent(resultPendingIntent);
     }
 
+    private void persistCurrentTime() {
+        mPrefEditor.putInt(KEY_SAVED_TIME, mGriffinTimes.getCurrentInt());
+        mPrefEditor.apply();
+    }
+
     @OnClick (R.id.nextButton)
     public void nextTime() {
         mCurrentTime = mGriffinTimes.getNext();
         updateViews();
         updateNotification();
+        persistCurrentTime();
 
         mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
     }
