@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateNotification() {
-        mBuilder.setContentTitle(mCurrentTime.getTime())
+        mBuilder.setContentTitle("It's " + mCurrentTime.getTime())
                 .setContentText(mCurrentTime.getNextCriteria());
     }
 
