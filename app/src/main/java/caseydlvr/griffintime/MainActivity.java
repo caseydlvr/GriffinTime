@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         mCurrentTime = mGriffinTimes.getCurrent();
         updateViews();
         updateNotification();
+        mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
     }
 
     @Override
