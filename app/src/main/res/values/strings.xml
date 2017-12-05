@@ -2,7 +2,7 @@
     <string name="app_name">Griffin Time</string>
     <string name="time_label">It\'s currently:</string>
     <string name="next_button_text">Yes</string>
-    <string name="time_placeholder">Lunch</string>
-    <string name="next_criteria_placeholder">Have you finished the last bite of your sandwich or soup?</string>
+    <string name="time_placeholder">--</string>
+    <string name="next_criteria_placeholder">...</string>
     <string name="notification_next_action">Yes</string>
 </resources>
