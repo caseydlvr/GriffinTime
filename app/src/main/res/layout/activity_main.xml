@@ -62,6 +62,7 @@
         android:paddingRight="16dp"
         android:text="@string/next_criteria_placeholder"
         android:textAlignment="center"
+        android:textColor="@color/secondaryTextColor"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/nextButton"
         app:layout_constraintEnd_toEndOf="parent"

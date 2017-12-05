@@ -3,12 +3,14 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/primaryDarkColor</item>
+        <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
-        <item name="colorAccent">@color/secondaryDarkColor</item>
-        <item name="android:colorBackground">@color/primaryColor</item>
+        <item name="colorAccent">@color/secondaryColor</item>
+        <item name="android:colorBackground">@color/primaryLightColor</item>
         <item name="android:colorButtonNormal">@color/secondaryColor</item>
-        <item name="android:textColor">@color/secondaryTextColor</item>
+        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="android:textColorSecondary">@color/secondaryTextColor</item>
+        <item name="android:navigationBarColor">@color/primaryColor</item>
     </style>
 
 </resources>
