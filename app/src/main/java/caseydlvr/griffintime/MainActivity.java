@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -137,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 );
 
         mBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                 .setSmallIcon(R.drawable.ic_clock)
                 .addAction(R.drawable.ic_stat_check, getString(R.string.notification_next_action), nextPendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_MIN)
