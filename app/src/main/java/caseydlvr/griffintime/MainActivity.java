@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 .addAction(R.drawable.ic_stat_check, getString(R.string.notification_next_action), nextPendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setCategory(Notification.CATEGORY_STATUS)
-                .setColor(getResources().getColor(R.color.secondaryColor))
+                .setColor(getResources().getColor(R.color.primaryLightColor))
                 .setOngoing(true)
                 .setContentIntent(resultPendingIntent);
     }
