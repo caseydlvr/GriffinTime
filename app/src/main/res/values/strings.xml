@@ -5,4 +5,5 @@
     <string name="time_placeholder">--</string>
     <string name="next_criteria_placeholder">...</string>
     <string name="notification_next_action">Yes</string>
+    <string name="griffin_image_content_description">Griffin</string>
 </resources>
