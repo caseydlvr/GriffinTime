@@ -84,6 +84,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        Log.d(TAG, "onWindowFocusChanged()");
+        super.onWindowFocusChanged(hasFocus);
+        if (mBound && hasFocus) updateViews(mGriffinTimeService.getCurrentTime());
+    }
+
     private void updateViews(GriffinTime currentTime) {
         mTimeText.setText(currentTime.getTime());
         mNextText.setText(currentTime.getNextCriteria());
