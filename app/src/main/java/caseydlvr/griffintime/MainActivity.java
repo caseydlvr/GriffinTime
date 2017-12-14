@@ -75,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
+        // to handle user advancing the time from notification while Activity is in the foreground
+        // because pulling down the notification bar doesn't trigger onPause
         if (mBound && hasFocus) updateViews(mGriffinTimeService.getCurrentTime());
     }
 
@@ -85,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick (R.id.nextButton)
     public void nextButtonClick() {
+        // TODO check mBound here? What if unbound?
         mGriffinTimeService.nextTime();
         updateViews(mGriffinTimeService.getCurrentTime());
     }
