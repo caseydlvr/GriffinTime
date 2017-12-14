@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
@@ -50,6 +51,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        // force portrait orientation for non-tablets
+        if (getResources().getBoolean(R.bool.portrait_only)) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
 
         mSharedPreferences = getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
         mPrefEditor = mSharedPreferences.edit();
