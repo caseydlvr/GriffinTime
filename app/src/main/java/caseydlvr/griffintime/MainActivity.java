@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -87,8 +88,13 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick (R.id.nextButton)
     public void nextButtonClick() {
-        // TODO check mBound here? What if unbound?
-        mGriffinTimeService.nextTime();
-        updateViews(mGriffinTimeService.getCurrentTime());
+        if (mBound) {
+            mGriffinTimeService.nextTime();
+            updateViews(mGriffinTimeService.getCurrentTime());
+        } else {
+            Intent intent = new Intent(MainActivity.this, GriffinTimeService.class);
+            bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+            Toast.makeText(this, "Something went wrong :O Try again", Toast.LENGTH_SHORT).show();
+        }
     }
 }
