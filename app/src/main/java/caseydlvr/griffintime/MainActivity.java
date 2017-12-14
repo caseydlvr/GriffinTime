@@ -17,7 +17,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = MainActivity.class.getSimpleName();
 
     private boolean mBound = false;
     private GriffinTimeService mGriffinTimeService;
@@ -25,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder binder) {
             mBound = true;
-            Log.d(TAG,"onServiceConnected");
             GriffinTimeService.LocalBinder localBinder = (GriffinTimeService.LocalBinder) binder;
             mGriffinTimeService = localBinder.getService();
             updateViews(mGriffinTimeService.getCurrentTime());
@@ -56,27 +54,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(TAG, "onStart()");
         Intent intent = new Intent(this, GriffinTimeService.class);
         bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onResume() {
-        Log.d(TAG, "onResume()");
         super.onResume();
         if (mBound) updateViews(mGriffinTimeService.getCurrentTime());
     }
 
     @Override
-    protected void onPause() {
-        Log.d(TAG, "onPause()");
-        super.onPause();
-    }
-
-    @Override
     protected void onStop() {
-        Log.d(TAG, "onStop()");
         super.onStop();
         if (mBound) {
             unbindService(mServiceConnection);
@@ -86,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-        Log.d(TAG, "onWindowFocusChanged()");
         super.onWindowFocusChanged(hasFocus);
         if (mBound && hasFocus) updateViews(mGriffinTimeService.getCurrentTime());
     }

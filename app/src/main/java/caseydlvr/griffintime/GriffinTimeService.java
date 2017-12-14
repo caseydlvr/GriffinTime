@@ -14,10 +14,8 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 public class GriffinTimeService extends Service {
-    private static final String TAG = GriffinTimeService.class.getSimpleName();
     private static final String NOTIFICATION_CHANNEL_ID = "time_channel";
     private static final String NOTIFICATION_CHANNEL_NAME = "Current time notification";
     private static final String PREFS_FILE = "caseydlvr.griffintime.preferences";
@@ -35,7 +33,6 @@ public class GriffinTimeService extends Service {
 
     @Override
     public void onCreate() {
-        Log.d(TAG, "Service onCreate()");
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
         mPrefEditor = sharedPreferences.edit();
         mGriffinTimes = new GriffinTimes();
@@ -47,7 +44,6 @@ public class GriffinTimeService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "Service onStartCommand()");
         if (intent.getAction().equals(ACTION_NEXT)) {
             nextTime();
             stopSelf(startId);
@@ -59,20 +55,7 @@ public class GriffinTimeService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d(TAG, "Service onBind()");
         return mBinder;
-    }
-
-    @Override
-    public boolean onUnbind(Intent intent) {
-        Log.d(TAG, "Service onUnbind()");
-        return super.onUnbind(intent);
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.d(TAG, "Service onDestroy()");
-        super.onDestroy();
     }
 
     public void nextTime() {
