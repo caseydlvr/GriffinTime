@@ -18,11 +18,9 @@ import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final String KEY_NEXT = "next_key";
 
-
-    private GriffinTimeService mGriffinTimeService;
     private boolean mBound = false;
+    private GriffinTimeService mGriffinTimeService;
     private ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder binder) {
@@ -53,23 +51,6 @@ public class MainActivity extends AppCompatActivity {
         if (getResources().getBoolean(R.bool.portrait_only)) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
-
-        // handling next from notification
-        // should be able to register the BroadcastReceiver in the app manifest
-//        IntentFilter filter = new IntentFilter();
-//        filter.addAction(KEY_NEXT);
-//
-//        mNextReceiver = new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context context, Intent intent) {
-//                if (intent.getAction().equals(KEY_NEXT)) {
-//                    nextTime();
-//                }
-//            }
-//        };
-//
-//        registerReceiver(mNextReceiver, filter);
-
     }
 
     @Override
@@ -101,16 +82,6 @@ public class MainActivity extends AppCompatActivity {
             unbindService(mServiceConnection);
             mBound = false;
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // normally should be in onPause, but then notification action won't work
-        // unless activity is open. This is a hack to keep the notification action working
-        // even when the Activity is paused/stopped until I work out some sort of service to
-        // handle the notification action
-//        unregisterReceiver(mNextReceiver);
     }
 
     private void updateViews(GriffinTime currentTime) {

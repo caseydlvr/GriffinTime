@@ -17,39 +17,43 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 public class GriffinTimeService extends Service {
-    private static String TAG = GriffinTimeService.class.getSimpleName();
-
-    private static final int NOTIFICATION_ID = 1;
+    private static final String TAG = GriffinTimeService.class.getSimpleName();
     private static final String NOTIFICATION_CHANNEL_ID = "time_channel";
     private static final String NOTIFICATION_CHANNEL_NAME = "Current time notification";
-    private static final String KEY_NEXT = "next_key";
     private static final String PREFS_FILE = "caseydlvr.griffintime.preferences";
     private static final String KEY_SAVED_TIME = "key_saved_time";
+    private static final String ACTION_NEXT = "caseydlvr.griffintime.NEXT";
+    private static final int NOTIFICATION_ID = 1;
 
     private GriffinTime mCurrentTime;
     private GriffinTimes mGriffinTimes;
-
+    private SharedPreferences.Editor mPrefEditor;
     private NotificationCompat.Builder mBuilder;
     private NotificationManager mNotifyMgr;
     private NotificationCompat.BigTextStyle mBigTextStyle = new NotificationCompat.BigTextStyle();
-
-
     private IBinder mBinder = new LocalBinder();
-
-//    private SharedPreferences mSharedPreferences;
-    private SharedPreferences.Editor mPrefEditor;
 
     @Override
     public void onCreate() {
         Log.d(TAG, "Service onCreate()");
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
-//        mSharedPreferences = getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
         mPrefEditor = sharedPreferences.edit();
         mGriffinTimes = new GriffinTimes();
         mGriffinTimes.setCurrentTime(sharedPreferences.getInt(KEY_SAVED_TIME, 0));
         mCurrentTime = mGriffinTimes.getCurrent();
         setupNotifications();
         mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG, "Service onStartCommand()");
+        if (intent.getAction().equals(ACTION_NEXT)) {
+            nextTime();
+            stopSelf(startId);
+        }
+
+        return Service.START_NOT_STICKY;
     }
 
     @Nullable
@@ -73,9 +77,7 @@ public class GriffinTimeService extends Service {
 
     public void nextTime() {
         mCurrentTime = mGriffinTimes.getNext();
-
         persistCurrentTime();
-
         updateNotification();
         mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
     }
@@ -99,8 +101,15 @@ public class GriffinTimeService extends Service {
         }
 
         // Intent for using the next action from the notification
-        Intent nextIntent = new Intent(KEY_NEXT);
-        PendingIntent nextPendingIntent = PendingIntent.getBroadcast(this, 0, nextIntent, 0);
+        Intent nextIntent = new Intent(this, GriffinTimeService.class);
+        nextIntent.setAction(ACTION_NEXT);
+        PendingIntent nextPendingIntent =
+                PendingIntent.getService(
+                        this,
+                        0,
+                        nextIntent,
+                        0
+                );
 
         // Intent for clicking the notification
         Intent resultIntent = new Intent(this, MainActivity.class);
