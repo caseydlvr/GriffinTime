@@ -1,20 +1,14 @@
 package caseydlvr.griffintime;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
+import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
-import android.graphics.BitmapFactory;
-import android.os.Build;
-import android.support.v4.app.NotificationCompat;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -23,24 +17,27 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
-
-    private static final int NOTIFICATION_ID = 1;
-    private static final String NOTIFICATION_CHANNEL_ID = "time_channel";
-    private static final String NOTIFICATION_CHANNEL_NAME = "Current time notification";
+    private static final String TAG = MainActivity.class.getSimpleName();
     private static final String KEY_NEXT = "next_key";
-    private static final String PREFS_FILE = "caseydlvr.griffintime.preferences";
-    private static final String KEY_SAVED_TIME = "key_saved_time";
 
-    private GriffinTime mCurrentTime;
-    private GriffinTimes mGriffinTimes;
 
-    private NotificationCompat.Builder mBuilder;
-    private NotificationManager mNotifyMgr;
-    private BroadcastReceiver mNextReceiver;
-    private NotificationCompat.BigTextStyle mBigTextStyle = new NotificationCompat.BigTextStyle();
+    private GriffinTimeService mGriffinTimeService;
+    private boolean mBound = false;
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            mBound = true;
+            Log.d(TAG,"onServiceConnected");
+            GriffinTimeService.LocalBinder localBinder = (GriffinTimeService.LocalBinder) binder;
+            mGriffinTimeService = localBinder.getService();
+            updateViews(mGriffinTimeService.getCurrentTime());
+        }
 
-    private SharedPreferences mSharedPreferences;
-    private SharedPreferences.Editor mPrefEditor;
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mBound = false;
+        }
+    };
 
     @BindView(R.id.timeText) TextView mTimeText;
     @BindView(R.id.nextText) TextView mNextText;
@@ -57,43 +54,53 @@ public class MainActivity extends AppCompatActivity {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
 
-        mSharedPreferences = getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
-        mPrefEditor = mSharedPreferences.edit();
-        mGriffinTimes = new GriffinTimes();
-        setupNotifications();
-
         // handling next from notification
         // should be able to register the BroadcastReceiver in the app manifest
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(KEY_NEXT);
+//        IntentFilter filter = new IntentFilter();
+//        filter.addAction(KEY_NEXT);
+//
+//        mNextReceiver = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context context, Intent intent) {
+//                if (intent.getAction().equals(KEY_NEXT)) {
+//                    nextTime();
+//                }
+//            }
+//        };
+//
+//        registerReceiver(mNextReceiver, filter);
 
-        mNextReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(KEY_NEXT)) {
-                    nextTime();
-                }
-            }
-        };
+    }
 
-        registerReceiver(mNextReceiver, filter);
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart()");
+        Intent intent = new Intent(this, GriffinTimeService.class);
+        bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onResume() {
+        Log.d(TAG, "onResume()");
         super.onResume();
-        mGriffinTimes.setCurrentTime(mSharedPreferences.getInt(KEY_SAVED_TIME, 0));
-        mCurrentTime = mGriffinTimes.getCurrent();
-        updateViews();
-        updateNotification();
-        mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
+        if (mBound) updateViews(mGriffinTimeService.getCurrentTime());
     }
 
     @Override
     protected void onPause() {
+        Log.d(TAG, "onPause()");
         super.onPause();
-        persistCurrentTime();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d(TAG, "onStop()");
+        super.onStop();
+        if (mBound) {
+            unbindService(mServiceConnection);
+            mBound = false;
+        }
     }
 
     @Override
@@ -103,72 +110,17 @@ public class MainActivity extends AppCompatActivity {
         // unless activity is open. This is a hack to keep the notification action working
         // even when the Activity is paused/stopped until I work out some sort of service to
         // handle the notification action
-        unregisterReceiver(mNextReceiver);
+//        unregisterReceiver(mNextReceiver);
     }
 
-    private void updateViews() {
-        mTimeText.setText(mCurrentTime.getTime());
-        mNextText.setText(mCurrentTime.getNextCriteria());
-    }
-
-    private void updateNotification() {
-        mBigTextStyle.bigText(mCurrentTime.getNextCriteria());
-        mBuilder.setContentTitle("It's " + mCurrentTime.getTime())
-                .setContentText(mCurrentTime.getNextCriteria());
-    }
-
-    private void setupNotifications() {
-        mNotifyMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            NotificationChannel channel = new NotificationChannel(
-                    NOTIFICATION_CHANNEL_ID,
-                    NOTIFICATION_CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_MIN);
-
-            channel.enableVibration(false);
-
-            mNotifyMgr.createNotificationChannel(channel);
-        }
-
-        // Intent for using the next action from the notification
-        Intent nextIntent = new Intent(KEY_NEXT);
-        PendingIntent nextPendingIntent = PendingIntent.getBroadcast(this, 0, nextIntent, 0);
-
-        // Intent for clicking the notification
-        Intent resultIntent = new Intent(this, MainActivity.class);
-        PendingIntent resultPendingIntent =
-                PendingIntent.getActivity(
-                        this,
-                        0,
-                        resultIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-
-        mBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                .setSmallIcon(R.drawable.ic_clock)
-                .addAction(R.drawable.ic_stat_check, getString(R.string.notification_next_action), nextPendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_MIN)
-                .setCategory(Notification.CATEGORY_STATUS)
-                .setStyle(mBigTextStyle)
-                .setColor(getResources().getColor(R.color.primaryLightColor))
-                .setOngoing(true)
-                .setContentIntent(resultPendingIntent);
-    }
-
-    private void persistCurrentTime() {
-        mPrefEditor.putInt(KEY_SAVED_TIME, mGriffinTimes.getCurrentInt());
-        mPrefEditor.apply();
+    private void updateViews(GriffinTime currentTime) {
+        mTimeText.setText(currentTime.getTime());
+        mNextText.setText(currentTime.getNextCriteria());
     }
 
     @OnClick (R.id.nextButton)
-    public void nextTime() {
-        mCurrentTime = mGriffinTimes.getNext();
-        updateViews();
-        updateNotification();
-        persistCurrentTime();
-
-        mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
+    public void nextButtonClick() {
+        mGriffinTimeService.nextTime();
+        updateViews(mGriffinTimeService.getCurrentTime());
     }
 }
