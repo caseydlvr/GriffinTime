@@ -39,7 +39,7 @@ public class GriffinTimeService extends Service {
         mGriffinTimes.setCurrentTime(sharedPreferences.getInt(KEY_SAVED_TIME, 0));
         mCurrentTime = mGriffinTimes.getCurrent();
         setupNotifications();
-        mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
+        updateNotification();
     }
 
     @Override
@@ -62,7 +62,6 @@ public class GriffinTimeService extends Service {
         mCurrentTime = mGriffinTimes.getNext();
         persistCurrentTime();
         updateNotification();
-        mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
     }
 
     public GriffinTime getCurrentTime() {
@@ -120,6 +119,7 @@ public class GriffinTimeService extends Service {
         mBigTextStyle.bigText(mCurrentTime.getNextCriteria());
         mBuilder.setContentTitle("It's " + mCurrentTime.getTime())
                 .setContentText(mCurrentTime.getNextCriteria());
+        mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
     }
 
     private void persistCurrentTime() {
