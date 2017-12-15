@@ -6,4 +6,7 @@
     <string name="next_criteria_placeholder">...</string>
     <string name="notification_next_action">Yes</string>
     <string name="griffin_image_content_description">Griffin</string>
+    <string name="show_notification_pref_title">Enable Notifications</string>
+    <string name="ongoing_notification_pref_title">Ongoing Notification</string>
+    <string name="ongoing_notification_pref_summary">Prevents notification from being dismissed</string>
 </resources>

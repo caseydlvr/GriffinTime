@@ -4,10 +4,11 @@
     <SwitchPreference
         android:defaultValue="true"
         android:key="show_notification_preference"
-        android:title="Enable Notifications"/>
+        android:title="@string/show_notification_pref_title"/>
     <SwitchPreference
         android:defaultValue="true"
         android:key="ongoing_notification_preference"
-        android:summary="Prevents notification from being dismissed"
-        android:title="Ongoing Notification"/>
+        android:summary="@string/ongoing_notification_pref_summary"
+        android:title="@string/ongoing_notification_pref_title"/>
+
 </PreferenceScreen>
