@@ -40,11 +40,9 @@ public class GriffinTimeService extends Service {
 
     @Override
     public void onCreate() {
-        SharedPreferences settingPrefs = PreferenceManager.getDefaultSharedPreferences(this);;
-        mUseNotification = settingPrefs
-                .getBoolean(SettingsActivity.KEY_SHOW_NOTIFICATION, true);
-        mIsOngoining = settingPrefs
-                .getBoolean(SettingsActivity.KEY_ONGOING_NOTIFICATION, true);
+        SharedPreferences settingPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mUseNotification = settingPrefs.getBoolean(SettingsActivity.KEY_SHOW_NOTIFICATION, true);
+        mIsOngoining = settingPrefs.getBoolean(SettingsActivity.KEY_ONGOING_NOTIFICATION, true);
 
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
         mPrefEditor = sharedPreferences.edit();
@@ -95,8 +93,6 @@ public class GriffinTimeService extends Service {
         persistCurrentTime();
         updateNotification();
     }
-
-
 
     public GriffinTime getCurrentTime() {
         return mCurrentTime;
