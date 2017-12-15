@@ -18,6 +18,15 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.APPLICATION_PREFERENCES"/>
+
+                <category android:name="android.intent.category.PREFERENCE"/>
+            </intent-filter>
+        </activity>
         <service android:name=".GriffinTimeService"/>
     </application>
 
