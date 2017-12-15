@@ -12,15 +12,20 @@ import android.graphics.BitmapFactory;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 
 public class GriffinTimeService extends Service {
+    public static final String ACTION_NOTIFY = "caseydlvr.griffintime.NOTIFY";
+    public static final String ACTION_DISMISS = "caseydlvr.griffintime.DISMISS";
+    public static final String ACTION_ONGOING = "caseydlvr.griffintime.ONGOING";
+    public static final String ACTION_OFFGOING = "caseydlvr.griffintime.OFFGOING";
+    private static final String ACTION_NEXT = "caseydlvr.griffintime.NEXT";
     private static final String NOTIFICATION_CHANNEL_ID = "time_channel";
     private static final String NOTIFICATION_CHANNEL_NAME = "Current time notification";
     private static final String PREFS_FILE = "caseydlvr.griffintime.preferences";
     private static final String KEY_SAVED_TIME = "key_saved_time";
-    private static final String ACTION_NEXT = "caseydlvr.griffintime.NEXT";
     private static final int NOTIFICATION_ID = 1;
 
     private GriffinTime mCurrentTime;
@@ -30,9 +35,17 @@ public class GriffinTimeService extends Service {
     private NotificationManager mNotifyMgr;
     private NotificationCompat.BigTextStyle mBigTextStyle = new NotificationCompat.BigTextStyle();
     private IBinder mBinder = new LocalBinder();
+    private boolean mUseNotification;
+    private boolean mIsOngoining;
 
     @Override
     public void onCreate() {
+        SharedPreferences settingPrefs = PreferenceManager.getDefaultSharedPreferences(this);;
+        mUseNotification = settingPrefs
+                .getBoolean(SettingsActivity.KEY_SHOW_NOTIFICATION, true);
+        mIsOngoining = settingPrefs
+                .getBoolean(SettingsActivity.KEY_ONGOING_NOTIFICATION, true);
+
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
         mPrefEditor = sharedPreferences.edit();
         mGriffinTimes = new GriffinTimes();
@@ -44,10 +57,29 @@ public class GriffinTimeService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent.getAction().equals(ACTION_NEXT)) {
-            nextTime();
-            stopSelf(startId);
+        switch (intent.getAction()) {
+            case ACTION_NEXT:
+                nextTime();
+                break;
+            case ACTION_NOTIFY:
+                mUseNotification = true;
+                updateNotification();
+                break;
+            case ACTION_DISMISS:
+                mUseNotification = false;
+                mNotifyMgr.cancel(NOTIFICATION_ID);
+                break;
+            case ACTION_ONGOING:
+                mIsOngoining = true;
+                updateNotification();
+                break;
+            case ACTION_OFFGOING:
+                mIsOngoining = false;
+                updateNotification();
+                break;
         }
+
+        stopSelf(startId);
 
         return Service.START_NOT_STICKY;
     }
@@ -63,6 +95,8 @@ public class GriffinTimeService extends Service {
         persistCurrentTime();
         updateNotification();
     }
+
+
 
     public GriffinTime getCurrentTime() {
         return mCurrentTime;
@@ -122,15 +156,17 @@ public class GriffinTimeService extends Service {
                 .setCategory(Notification.CATEGORY_STATUS)
                 .setStyle(mBigTextStyle)
                 .setColor(getResources().getColor(R.color.primaryLightColor))
-                .setOngoing(true)
                 .setContentIntent(resultPendingIntent);
     }
 
     private void updateNotification() {
         mBigTextStyle.bigText(mCurrentTime.getNextCriteria());
         mBuilder.setContentTitle("It's " + mCurrentTime.getTime())
-                .setContentText(mCurrentTime.getNextCriteria());
-        mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
+                .setContentText(mCurrentTime.getNextCriteria())
+                .setOngoing(mIsOngoining);
+
+        if (mUseNotification) mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
+        else                  mNotifyMgr.cancel(NOTIFICATION_ID);
     }
 
     private void persistCurrentTime() {
