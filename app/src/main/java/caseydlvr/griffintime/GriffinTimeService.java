@@ -93,6 +93,16 @@ public class GriffinTimeService extends Service {
                         0
                 );
 
+        // Intent for using the settings action from the notification
+        Intent settingsIntent = new Intent(this, SettingsActivity.class);
+        PendingIntent settingsPendingIntent =
+                PendingIntent.getActivity(
+                        this,
+                        0,
+                        settingsIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
         // Intent for clicking the notification
         Intent resultIntent = new Intent(this, MainActivity.class);
         PendingIntent resultPendingIntent =
@@ -107,6 +117,7 @@ public class GriffinTimeService extends Service {
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                 .setSmallIcon(R.drawable.ic_clock)
                 .addAction(R.drawable.ic_stat_check, getString(R.string.notification_next_action), nextPendingIntent)
+                .addAction(R.drawable.ic_stat_settings, "Settings", settingsPendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setCategory(Notification.CATEGORY_STATUS)
                 .setStyle(mBigTextStyle)
