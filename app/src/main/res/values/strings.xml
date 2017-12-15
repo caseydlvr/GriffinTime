@@ -9,6 +9,6 @@
     <string name="pref_show_notification_title">Show Notification</string>
     <string name="pref_show_notification_summary">Show the current Griffin Time as a notification</string>
     <string name="pref_ongoing_notification_title">Ongoing Notification</string>
-    <string name="pref_ongoing_notification_summary">Prevents Griffin Time notification from being dismissed individually or via "Clear All"</string>
+    <string name="pref_ongoing_notification_summary">Prevents the Griffin Time notification from being dismissed individually or via the \"Clear All\" button</string>
     <string name="settings_action">Settings</string>
 </resources>
