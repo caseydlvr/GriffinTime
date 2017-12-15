@@ -6,8 +6,9 @@
     <string name="next_criteria_placeholder">...</string>
     <string name="notification_next_action">Yes</string>
     <string name="griffin_image_content_description">Griffin</string>
-    <string name="pref_show_notification_title">Enable Notifications</string>
+    <string name="pref_show_notification_title">Show Notification</string>
+    <string name="pref_show_notification_summary">Show the current Griffin Time as a notification</string>
     <string name="pref_ongoing_notification_title">Ongoing Notification</string>
-    <string name="pref_ongoing_notification_summary">Prevents notification from being dismissed</string>
+    <string name="pref_ongoing_notification_summary">Prevents Griffin Time notification from being dismissed individually or via "Clear All"</string>
     <string name="settings_action">Settings</string>
 </resources>

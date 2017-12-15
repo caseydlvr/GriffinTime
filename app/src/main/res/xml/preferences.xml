@@ -4,11 +4,12 @@
     <SwitchPreference
         android:defaultValue="true"
         android:key="pref_show_notification"
-        android:title="@string/pref_show_notification_title"/>
+        android:title="@string/pref_show_notification_title"
+        android:summary="@string/pref_show_notification_summary"/>
     <SwitchPreference
         android:defaultValue="true"
         android:key="pref_ongoing_notification"
-        android:summary="@string/pref_ongoing_notification_summary"
-        android:title="@string/pref_ongoing_notification_title"/>
+        android:title="@string/pref_ongoing_notification_title"
+        android:summary="@string/pref_ongoing_notification_summary"/>
 
 </PreferenceScreen>
