@@ -36,13 +36,13 @@ public class GriffinTimeService extends Service {
     private NotificationCompat.BigTextStyle mBigTextStyle = new NotificationCompat.BigTextStyle();
     private IBinder mBinder = new LocalBinder();
     private boolean mUseNotification;
-    private boolean mIsOngoining;
+    private boolean mIsOngoing;
 
     @Override
     public void onCreate() {
         SharedPreferences settingPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mUseNotification = settingPrefs.getBoolean(SettingsActivity.KEY_SHOW_NOTIFICATION, true);
-        mIsOngoining = settingPrefs.getBoolean(SettingsActivity.KEY_ONGOING_NOTIFICATION, true);
+        mIsOngoing = settingPrefs.getBoolean(SettingsActivity.KEY_ONGOING_NOTIFICATION, true);
 
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
         mPrefEditor = sharedPreferences.edit();
@@ -68,11 +68,11 @@ public class GriffinTimeService extends Service {
                 mNotifyMgr.cancel(NOTIFICATION_ID);
                 break;
             case ACTION_ONGOING:
-                mIsOngoining = true;
+                mIsOngoing = true;
                 updateNotification();
                 break;
             case ACTION_OFFGOING:
-                mIsOngoining = false;
+                mIsOngoing = false;
                 updateNotification();
                 break;
         }
@@ -148,7 +148,7 @@ public class GriffinTimeService extends Service {
         mBigTextStyle.bigText(mCurrentTime.getNextCriteria());
         mBuilder.setContentTitle("It's " + mCurrentTime.getTime())
                 .setContentText(mCurrentTime.getNextCriteria())
-                .setOngoing(mIsOngoining);
+                .setOngoing(mIsOngoing);
 
         if (mUseNotification) mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
         else                  mNotifyMgr.cancel(NOTIFICATION_ID);
