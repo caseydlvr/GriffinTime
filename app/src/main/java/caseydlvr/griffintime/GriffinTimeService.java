@@ -5,6 +5,8 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,13 +17,16 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.widget.RemoteViews;
 
 public class GriffinTimeService extends Service {
     public static final String ACTION_NOTIFY = "caseydlvr.griffintime.NOTIFY";
     public static final String ACTION_DISMISS = "caseydlvr.griffintime.DISMISS";
     public static final String ACTION_ONGOING = "caseydlvr.griffintime.ONGOING";
     public static final String ACTION_OFFGOING = "caseydlvr.griffintime.OFFGOING";
-    private static final String ACTION_NEXT = "caseydlvr.griffintime.NEXT";
+    public static final String ACTION_NEXT = "caseydlvr.griffintime.NEXT";
+    public static final String ACTION_WIDGET_SYNC = "aseydlvr.griffintime.WIDGET_SYNC";
+    public static final String KEY_WIDGET_ID = "key_widget_id";
     private static final String NOTIFICATION_CHANNEL_ID = "time_channel";
     private static final String NOTIFICATION_CHANNEL_NAME = "Current time notification";
     private static final String PREFS_FILE = "caseydlvr.griffintime.preferences";
@@ -34,6 +39,7 @@ public class GriffinTimeService extends Service {
     private NotificationCompat.Builder mBuilder;
     private NotificationManager mNotifyMgr;
     private NotificationCompat.BigTextStyle mBigTextStyle = new NotificationCompat.BigTextStyle();
+    private AppWidgetManager mAppWidgetManager;
     private IBinder mBinder = new LocalBinder();
     private boolean mUseNotification;
     private boolean mIsOngoing;
@@ -51,6 +57,8 @@ public class GriffinTimeService extends Service {
         mCurrentTime = mGriffinTimes.getCurrent();
         setupNotifications();
         updateNotification();
+
+        mAppWidgetManager = AppWidgetManager.getInstance(this);
     }
 
     @Override
@@ -75,6 +83,9 @@ public class GriffinTimeService extends Service {
                 mIsOngoing = false;
                 updateNotification();
                 break;
+            case ACTION_WIDGET_SYNC:
+                updateWidget(intent.getIntExtra(KEY_WIDGET_ID, -1));
+                break;
         }
 
         stopSelf(startId);
@@ -92,6 +103,7 @@ public class GriffinTimeService extends Service {
         mCurrentTime = mGriffinTimes.getNext();
         persistCurrentTime();
         updateNotification();
+        updateWidgets();
     }
 
     public GriffinTime getCurrentTime() {
@@ -152,6 +164,24 @@ public class GriffinTimeService extends Service {
 
         if (mUseNotification) mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
         else                  mNotifyMgr.cancel(NOTIFICATION_ID);
+    }
+
+    private void updateWidgets() {
+        int[] widgetIds = mAppWidgetManager.getAppWidgetIds(new ComponentName(this, WidgetProvider.class));
+
+        for (int id : widgetIds) {
+            updateWidget(id);
+        }
+    }
+
+    private void updateWidget(int id) {
+        // invalid ID
+        if (id < 0) return;
+
+        RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.widget);
+        remoteViews.setTextViewText(R.id.timeText, "It's " + mCurrentTime.getTime());
+        remoteViews.setTextViewText(R.id.nextText, mCurrentTime.getNextCriteria());
+        mAppWidgetManager.updateAppWidget(id, remoteViews);
     }
 
     private void persistCurrentTime() {
