@@ -25,13 +25,17 @@ public class GriffinTimeService extends Service {
     public static final String ACTION_ONGOING = "caseydlvr.griffintime.ONGOING";
     public static final String ACTION_OFFGOING = "caseydlvr.griffintime.OFFGOING";
     public static final String ACTION_NEXT = "caseydlvr.griffintime.NEXT";
-    public static final String ACTION_WIDGET_SYNC = "aseydlvr.griffintime.WIDGET_SYNC";
+    public static final String ACTION_WIDGET_SYNC = "caseydlvr.griffintime.WIDGET_SYNC";
     public static final String KEY_WIDGET_ID = "key_widget_id";
+    public static final String KEY_USE_FOREGROUND = "key_use_foreground";
     private static final String NOTIFICATION_CHANNEL_ID = "time_channel";
     private static final String NOTIFICATION_CHANNEL_NAME = "Current time notification";
+    private static final String NOTIFICATION_CHANNEL_ID_FG = "time_channel_foreground";
+    private static final String NOTIFICATION_CHANNEL_NAME_FG = "Widget update foreground notification";
     private static final String PREFS_FILE = "caseydlvr.griffintime.preferences";
     private static final String KEY_SAVED_TIME = "key_saved_time";
     private static final int NOTIFICATION_ID = 1;
+    private static final int NOTIFICATION_ID_FG = 2;
 
     private GriffinTime mCurrentTime;
     private GriffinTimes mGriffinTimes;
@@ -39,6 +43,7 @@ public class GriffinTimeService extends Service {
     private NotificationCompat.Builder mBuilder;
     private NotificationManager mNotifyMgr;
     private NotificationCompat.BigTextStyle mBigTextStyle = new NotificationCompat.BigTextStyle();
+    private Notification mNotificationFg;
     private AppWidgetManager mAppWidgetManager;
     private IBinder mBinder = new LocalBinder();
     private boolean mUseNotification;
@@ -63,6 +68,12 @@ public class GriffinTimeService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        boolean useForeground = intent.getBooleanExtra(KEY_USE_FOREGROUND, false);
+
+        if (useForeground) {
+            startForeground(NOTIFICATION_ID_FG, mNotificationFg);
+        }
+
         switch (intent.getAction()) {
             case ACTION_NEXT:
                 nextTime();
@@ -86,6 +97,10 @@ public class GriffinTimeService extends Service {
             case ACTION_WIDGET_SYNC:
                 updateWidget(intent.getIntExtra(KEY_WIDGET_ID, -1));
                 break;
+        }
+
+        if (useForeground) {
+            stopForeground(true);
         }
 
         stopSelf(startId);
@@ -113,15 +128,21 @@ public class GriffinTimeService extends Service {
     private void setupNotifications() {
         mNotifyMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
                     NOTIFICATION_CHANNEL_ID,
                     NOTIFICATION_CHANNEL_NAME,
                     NotificationManager.IMPORTANCE_MIN);
-
             channel.enableVibration(false);
-
             mNotifyMgr.createNotificationChannel(channel);
+
+            // for foreground notification when using widgets
+            NotificationChannel fgChannel = new NotificationChannel(
+                    NOTIFICATION_CHANNEL_ID_FG,
+                    NOTIFICATION_CHANNEL_NAME_FG,
+                    NotificationManager.IMPORTANCE_LOW);
+            fgChannel.enableVibration(false);
+            mNotifyMgr.createNotificationChannel(fgChannel);
         }
 
         // Intent for using the next action from the notification
@@ -154,6 +175,14 @@ public class GriffinTimeService extends Service {
                 .setStyle(mBigTextStyle)
                 .setColor(getResources().getColor(R.color.primaryLightColor))
                 .setContentIntent(resultPendingIntent);
+
+        mNotificationFg = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID_FG)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                .setSmallIcon(R.drawable.ic_clock)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setContentTitle("Griffin Time Widgets")
+                .setContentText("Updating widgets...")
+                .build();
     }
 
     private void updateNotification() {

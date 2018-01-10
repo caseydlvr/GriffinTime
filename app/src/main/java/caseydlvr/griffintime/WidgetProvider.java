@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.widget.RemoteViews;
 
 public class WidgetProvider extends AppWidgetProvider {
@@ -22,7 +23,13 @@ public class WidgetProvider extends AppWidgetProvider {
             // next time when clicking button
             Intent nextIntent = new Intent(context, GriffinTimeService.class);
             nextIntent.setAction(GriffinTimeService.ACTION_NEXT);
-            PendingIntent nextPendingIntent = PendingIntent.getService(context, 0, nextIntent, 0);
+            PendingIntent nextPendingIntent;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                nextIntent.putExtra(GriffinTimeService.KEY_USE_FOREGROUND, true);
+                nextPendingIntent = PendingIntent.getForegroundService(context, 0, nextIntent, 0);
+            } else {
+                nextPendingIntent = PendingIntent.getService(context, 0, nextIntent, 0);
+            }
             remoteViews.setOnClickPendingIntent(R.id.nextButton, nextPendingIntent);
 
             // tell the service to update the widget with the current time
@@ -30,7 +37,12 @@ public class WidgetProvider extends AppWidgetProvider {
             Intent syncIntent = new Intent(context, GriffinTimeService.class);
             syncIntent.setAction(GriffinTimeService.ACTION_WIDGET_SYNC);
             syncIntent.putExtra(GriffinTimeService.KEY_WIDGET_ID, id);
-            context.startService(syncIntent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                syncIntent.putExtra(GriffinTimeService.KEY_USE_FOREGROUND, true);
+                context.startForegroundService(syncIntent);
+            } else {
+                context.startService(syncIntent);
+            }
 
             appWidgetManager.updateAppWidget(id, remoteViews);
         }
