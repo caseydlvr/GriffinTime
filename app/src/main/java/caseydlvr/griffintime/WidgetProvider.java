@@ -16,14 +16,16 @@ public class WidgetProvider extends AppWidgetProvider {
 
             // launch activity when clicking image or text
             Intent activityIntent = new Intent(context, MainActivity.class);
-            PendingIntent activityPendtingIntent = PendingIntent.getActivity(context, 0, activityIntent, 0);
-            remoteViews.setOnClickPendingIntent(R.id.imageView, activityPendtingIntent);
-            remoteViews.setOnClickPendingIntent(R.id.textLinearLayout, activityPendtingIntent);
+            PendingIntent activityPendingIntent = PendingIntent.getActivity(context, 0, activityIntent, 0);
+            remoteViews.setOnClickPendingIntent(R.id.imageView, activityPendingIntent);
+            remoteViews.setOnClickPendingIntent(R.id.textLinearLayout, activityPendingIntent);
 
             // next time when clicking button
             Intent nextIntent = new Intent(context, GriffinTimeService.class);
             nextIntent.setAction(GriffinTimeService.ACTION_NEXT);
             PendingIntent nextPendingIntent;
+            // TODO: change architecture to not require a service to do this work
+            // must run service in the foreground on Oreo and above
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 nextIntent.putExtra(GriffinTimeService.KEY_USE_FOREGROUND, true);
                 nextPendingIntent = PendingIntent.getForegroundService(context, 0, nextIntent, 0);
@@ -32,11 +34,12 @@ public class WidgetProvider extends AppWidgetProvider {
             }
             remoteViews.setOnClickPendingIntent(R.id.nextButton, nextPendingIntent);
 
-            // tell the service to update the widget with the current time
-            // needed so the widget is populated with the correct time when the widget first loads
+            // populate widget with current time (needed on widget's first load)
             Intent syncIntent = new Intent(context, GriffinTimeService.class);
             syncIntent.setAction(GriffinTimeService.ACTION_WIDGET_SYNC);
             syncIntent.putExtra(GriffinTimeService.KEY_WIDGET_ID, id);
+            // TODO: change architecture to not require a service to do this work
+            // must run service in the foreground on Oreo and above
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 syncIntent.putExtra(GriffinTimeService.KEY_USE_FOREGROUND, true);
                 context.startForegroundService(syncIntent);

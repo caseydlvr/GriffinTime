@@ -70,6 +70,8 @@ public class GriffinTimeService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         boolean useForeground = intent.getBooleanExtra(KEY_USE_FOREGROUND, false);
 
+        // TODO: change architecture to not require a service to do this work
+        // to support using the service from the widget on Oreo and later
         if (useForeground) {
             startForeground(NOTIFICATION_ID_FG, mNotificationFg);
         }
