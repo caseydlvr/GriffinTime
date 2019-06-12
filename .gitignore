@@ -6,9 +6,10 @@
 /.idea/misc.xml
 /.idea/dictionaries
 /.idea/libraries
+/.idea/caches
+/.idea/assetWizardSettings.xml
 /build
 /captures
-/gradle.properties
 app/libs/
 libs/
 output.json
