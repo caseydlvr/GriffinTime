@@ -2,9 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="caseydlvr.griffintime">
 
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
     <application
+        android:name=".GriffinTimeApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -30,8 +29,12 @@
                 <category android:name="android.intent.category.PREFERENCE"/>
             </intent-filter>
         </activity>
-        <service android:name=".GriffinTimeService"/>
-        <receiver android:name=".WidgetProvider">
+        <receiver android:name=".GriffinTimeActionReceiver">
+            <intent-filter>
+                <action android:name="caseydlvr.griffintime.action.NEXT"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".GriffinTimeWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
