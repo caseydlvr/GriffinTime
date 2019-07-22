@@ -15,9 +15,9 @@ public class ActionHandler {
     private Context mContext;
     private GriffinTimeRepository mRepository;
 
-    public ActionHandler(Context context, GriffinTimeRepository griffinTimeRepository) {
+    public ActionHandler(Context context, GriffinTimeRepository repository) {
         mContext = context;
-        mRepository = griffinTimeRepository;
+        mRepository = repository;
     }
 
     public void handleAction(String action) {
@@ -37,15 +37,16 @@ public class ActionHandler {
     private void handleNext() {
         GriffinTime currentTime = mRepository.next();
 
-        new GriffinTimeNotification(mContext, mRepository).notify(currentTime);
+        new GriffinTimeNotification(mContext).notify(currentTime, mRepository.isOngoing());
         new GriffinTimeWidgets(mContext).updateAll(currentTime);
     }
 
     private void handleNotify() {
-        new GriffinTimeNotification(mContext, mRepository).notifyCurrentTime();
+        new GriffinTimeNotification(mContext)
+                .notify(mRepository.getCurrentTime(), mRepository.isOngoing());
     }
 
     private void handleDismiss() {
-        new GriffinTimeNotification(mContext, mRepository).dismiss();
+        new GriffinTimeNotification(mContext).dismiss();
     }
 }
