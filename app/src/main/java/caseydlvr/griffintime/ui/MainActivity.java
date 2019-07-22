@@ -1,4 +1,4 @@
-package caseydlvr.griffintime;
+package caseydlvr.griffintime.ui;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -12,8 +12,15 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import caseydlvr.griffintime.ActionHandler;
+import caseydlvr.griffintime.GriffinTimeApp;
+import caseydlvr.griffintime.data.GriffinTimeRepository;
+import caseydlvr.griffintime.model.GriffinTime;
+import caseydlvr.griffintime.R;
 
 public class MainActivity extends AppCompatActivity {
+
+    GriffinTimeRepository mRepository;
 
     @BindView(R.id.timeText) TextView mTimeText;
     @BindView(R.id.nextText) TextView mNextText;
@@ -29,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
         if (getResources().getBoolean(R.bool.portrait_only)) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+
+        mRepository = ((GriffinTimeApp) getApplication()).getRepository();
     }
 
     @Override
@@ -64,8 +73,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateViews() {
-        GriffinTime currentTime =
-                GriffinTimes.getGriffinTimeByInt(GriffinTimeStorage.getCurrentTime(this));
+        GriffinTime currentTime = mRepository.getCurrentTime();
 
         mTimeText.setText(currentTime.getTime());
         mNextText.setText(currentTime.getNextCriteria());
@@ -73,7 +81,8 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick (R.id.nextButton)
     public void nextButtonClick() {
-        ActionHandler.handleAction(this, ActionHandler.ACTION_NEXT);
+        ActionHandler actionHandler = ((GriffinTimeApp) getApplication()).getActionHandler();
+        actionHandler.handleAction(ActionHandler.ACTION_NEXT);
         updateViews();
     }
 }

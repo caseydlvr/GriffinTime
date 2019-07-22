@@ -8,7 +8,9 @@ public class GriffinTimeActionReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction() != null) {
-            ActionHandler.handleAction(context, intent.getAction());
+            ActionHandler actionHandler =
+                    ((GriffinTimeApp) context.getApplicationContext()).getActionHandler();
+                    actionHandler.handleAction(intent.getAction());
         }
     }
 }

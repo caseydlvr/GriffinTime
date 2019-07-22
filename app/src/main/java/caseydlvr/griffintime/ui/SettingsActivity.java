@@ -1,10 +1,12 @@
-package caseydlvr.griffintime;
+package caseydlvr.griffintime.ui;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import caseydlvr.griffintime.ActionHandler;
+import caseydlvr.griffintime.GriffinTimeApp;
 
 public class SettingsActivity extends AppCompatActivity {
     public static final String KEY_SHOW_NOTIFICATION = "pref_show_notification";
@@ -13,16 +15,19 @@ public class SettingsActivity extends AppCompatActivity {
 
     private SharedPreferences.OnSharedPreferenceChangeListener mSharedPreferenceChangeListener =
             (sharedPreferences, key) -> {
+                ActionHandler actions =
+                        ((GriffinTimeApp) getApplicationContext()).getActionHandler();
+
                 switch (key) {
                     case KEY_SHOW_NOTIFICATION:
                         if (sharedPreferences.getBoolean(key, true)) {
-                            ActionHandler.handleAction(this, ActionHandler.ACTION_NOTIFY);
+                            actions.handleAction(ActionHandler.ACTION_NOTIFY);
                         } else {
-                            ActionHandler.handleAction(this, ActionHandler.ACTION_DISMISS);
+                            actions.handleAction(ActionHandler.ACTION_DISMISS);
                         }
                         break;
                     case KEY_ONGOING_NOTIFICATION:
-                        ActionHandler.handleAction(this, ActionHandler.ACTION_NOTIFY);
+                        actions.handleAction(ActionHandler.ACTION_NOTIFY);
                         break;
                 }
             };

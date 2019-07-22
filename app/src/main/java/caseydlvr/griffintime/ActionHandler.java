@@ -2,39 +2,50 @@ package caseydlvr.griffintime;
 
 import android.content.Context;
 
+import caseydlvr.griffintime.data.GriffinTimeRepository;
+import caseydlvr.griffintime.model.GriffinTime;
+import caseydlvr.griffintime.notification.GriffinTimeNotification;
+import caseydlvr.griffintime.widget.GriffinTimeWidgets;
+
 public class ActionHandler {
     public static final String ACTION_NOTIFY = "caseydlvr.griffintime.action.NOTIFY";
     public static final String ACTION_DISMISS = "caseydlvr.griffintime.action.DISMISS";
     public static final String ACTION_NEXT = "caseydlvr.griffintime.action.NEXT";
 
-    public static void handleAction(Context context, String action) {
+    private Context mContext;
+    private GriffinTimeRepository mRepository;
+
+    public ActionHandler(Context context, GriffinTimeRepository griffinTimeRepository) {
+        mContext = context;
+        mRepository = griffinTimeRepository;
+    }
+
+    public void handleAction(String action) {
         switch (action) {
             case ACTION_NEXT:
-                handleNext(context);
+                handleNext();
                 break;
             case ACTION_NOTIFY:
-                handleNotify(context);
+                handleNotify();
                 break;
             case ACTION_DISMISS:
-                handleDismiss(context);
+                handleDismiss();
                 break;
         }
     }
 
-    private static void handleNext(Context context) {
-        GriffinTimes griffinTimes = new GriffinTimes(GriffinTimeStorage.getCurrentTime(context));
-        GriffinTime currentTime = griffinTimes.getNext();
-        GriffinTimeStorage.persistCurrentTime(context, griffinTimes.getCurrentInt());
+    private void handleNext() {
+        GriffinTime currentTime = mRepository.next();
 
-        new GriffinTimeNotification(context).notify(currentTime);
-        new GriffinTimeWidgets(context).updateAll(currentTime);
+        new GriffinTimeNotification(mContext, mRepository).notify(currentTime);
+        new GriffinTimeWidgets(mContext).updateAll(currentTime);
     }
 
-    private static void handleNotify(Context context) {
-        new GriffinTimeNotification(context).notifyCurrentTime();
+    private void handleNotify() {
+        new GriffinTimeNotification(mContext, mRepository).notifyCurrentTime();
     }
 
-    private static void handleDismiss(Context context) {
-        new GriffinTimeNotification(context).dismiss();
+    private void handleDismiss() {
+        new GriffinTimeNotification(mContext, mRepository).dismiss();
     }
 }

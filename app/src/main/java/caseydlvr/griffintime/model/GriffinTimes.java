@@ -1,7 +1,7 @@
-package caseydlvr.griffintime;
+package caseydlvr.griffintime.model;
 
 public class GriffinTimes {
-    private static final GriffinTime[] griffinTimes =  new GriffinTime[]{
+    private final GriffinTime[] griffinTimes =  new GriffinTime[]{
             new GriffinTime(
                     "9:30",
                     "Have you eaten breakfast and are hungry again?"),
@@ -21,10 +21,6 @@ public class GriffinTimes {
 
     private int mCurrentTime;
 
-    public static GriffinTime getGriffinTimeByInt(int i) {
-        return griffinTimes[i];
-    }
-
     public GriffinTimes() {
         mCurrentTime = 0;
     }
@@ -33,7 +29,7 @@ public class GriffinTimes {
         mCurrentTime = currentTime;
     }
 
-    public GriffinTime getNext() {
+    public GriffinTime next() {
         if (mCurrentTime == griffinTimes.length - 1) {
             mCurrentTime = 0;
         }

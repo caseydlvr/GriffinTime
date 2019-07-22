@@ -1,4 +1,4 @@
-package caseydlvr.griffintime;
+package caseydlvr.griffintime.widget;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -7,11 +7,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 
+import caseydlvr.griffintime.ActionHandler;
+import caseydlvr.griffintime.GriffinTimeApp;
+import caseydlvr.griffintime.model.GriffinTime;
+import caseydlvr.griffintime.GriffinTimeActionReceiver;
+import caseydlvr.griffintime.data.SharedPreferencesStorage;
+import caseydlvr.griffintime.model.GriffinTimes;
+import caseydlvr.griffintime.ui.MainActivity;
+import caseydlvr.griffintime.R;
+
 public class GriffinTimeWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         GriffinTime currentTime =
-                GriffinTimes.getGriffinTimeByInt(GriffinTimeStorage.getCurrentTime(context));
+                ((GriffinTimeApp) context.getApplicationContext()).getRepository().getCurrentTime();
 
         updateWidgets(context, appWidgetManager, appWidgetIds, currentTime);
     }

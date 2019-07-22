@@ -1,4 +1,4 @@
-package caseydlvr.griffintime;
+package caseydlvr.griffintime.notification;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -10,6 +10,12 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
+import caseydlvr.griffintime.ActionHandler;
+import caseydlvr.griffintime.data.GriffinTimeRepository;
+import caseydlvr.griffintime.model.GriffinTime;
+import caseydlvr.griffintime.GriffinTimeActionReceiver;
+import caseydlvr.griffintime.ui.MainActivity;
+import caseydlvr.griffintime.R;
 
 public class GriffinTimeNotification {
 
@@ -18,13 +24,15 @@ public class GriffinTimeNotification {
     private static final int NOTIFICATION_ID = 1;
 
     private final NotificationCompat.BigTextStyle mBigTextStyle = new NotificationCompat.BigTextStyle();
-    private NotificationCompat.Builder mBuilder;
-    private NotificationManager mNotifyMgr;
+    private final NotificationCompat.Builder mBuilder;
+    private final NotificationManager mNotifyMgr;
     private final Context mContext;
+    private final GriffinTimeRepository mRepository;
 
 
-    public GriffinTimeNotification(Context context) {
+    public GriffinTimeNotification(Context context, GriffinTimeRepository griffinTimeRepository) {
         mContext = context;
+        mRepository = griffinTimeRepository;
         mNotifyMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         initNotificationChannel();
         mBuilder = initNotification();
@@ -38,13 +46,13 @@ public class GriffinTimeNotification {
         mBigTextStyle.bigText(currentTime.getNextCriteria());
         mBuilder.setContentTitle("It's " + currentTime.getTime())
                 .setContentText(currentTime.getNextCriteria())
-                .setOngoing(GriffinTimeStorage.isOngoing(mContext));
+                .setOngoing(mRepository.isOngoing());
 
         mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
     }
 
     public void notifyCurrentTime() {
-        notify(new GriffinTimes(GriffinTimeStorage.getCurrentTime(mContext)).getCurrent());
+        notify(mRepository.getCurrentTime());
     }
 
 

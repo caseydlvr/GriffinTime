@@ -1,8 +1,9 @@
-package caseydlvr.griffintime;
+package caseydlvr.griffintime.ui;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import androidx.annotation.Nullable;
+import caseydlvr.griffintime.R;
 
 
 public class SettingsFragment extends PreferenceFragment {

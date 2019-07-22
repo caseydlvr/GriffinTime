@@ -1,8 +1,10 @@
-package caseydlvr.griffintime;
+package caseydlvr.griffintime.widget;
 
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
+
+import caseydlvr.griffintime.model.GriffinTime;
 
 public class GriffinTimeWidgets {
 
