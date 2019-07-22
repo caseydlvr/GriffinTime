@@ -11,8 +11,6 @@ import caseydlvr.griffintime.ActionHandler;
 import caseydlvr.griffintime.GriffinTimeApp;
 import caseydlvr.griffintime.model.GriffinTime;
 import caseydlvr.griffintime.GriffinTimeActionReceiver;
-import caseydlvr.griffintime.data.SharedPreferencesStorage;
-import caseydlvr.griffintime.model.GriffinTimes;
 import caseydlvr.griffintime.ui.MainActivity;
 import caseydlvr.griffintime.R;
 
