@@ -1,4 +1,4 @@
-package caseydlvr.griffintime;
+package caseydlvr.griffintime.model;
 
 public class GriffinTime {
     private String mTime;

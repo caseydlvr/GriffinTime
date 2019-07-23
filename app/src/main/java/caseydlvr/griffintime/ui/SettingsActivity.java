@@ -1,41 +1,34 @@
-package caseydlvr.griffintime;
+package caseydlvr.griffintime.ui;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
+import caseydlvr.griffintime.actions.ActionHandler;
+import caseydlvr.griffintime.GriffinTimeApp;
 
 public class SettingsActivity extends AppCompatActivity {
     public static final String KEY_SHOW_NOTIFICATION = "pref_show_notification";
     public static final String KEY_ONGOING_NOTIFICATION = "pref_ongoing_notification";
-
     private SharedPreferences mSharedPreferences;
+
     private SharedPreferences.OnSharedPreferenceChangeListener mSharedPreferenceChangeListener =
-            new SharedPreferences.OnSharedPreferenceChangeListener() {
-                @Override
-                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                    Intent intent = new Intent(SettingsActivity.this, GriffinTimeService.class);
-                    switch (key) {
-                        case KEY_SHOW_NOTIFICATION:
-                            if (sharedPreferences.getBoolean(key, true)) {
-                                intent.setAction(GriffinTimeService.ACTION_NOTIFY);
-                            } else {
-                                intent.setAction(GriffinTimeService.ACTION_DISMISS);
-                            }
-                            startService(intent);
-                            break;
-                        case KEY_ONGOING_NOTIFICATION:
-                            if (sharedPreferences.getBoolean(key, true)) {
-                                intent.setAction(GriffinTimeService.ACTION_ONGOING);
-                            } else {
-                                intent.setAction(GriffinTimeService.ACTION_OFFGOING);
-                            }
-                            startService(intent);
-                            break;
-                    }
+            (sharedPreferences, key) -> {
+                ActionHandler actions =
+                        ((GriffinTimeApp) getApplicationContext()).getActionHandler();
+
+                switch (key) {
+                    case KEY_SHOW_NOTIFICATION:
+                        if (sharedPreferences.getBoolean(key, true)) {
+                            actions.handleAction(ActionHandler.ACTION_NOTIFY);
+                        } else {
+                            actions.handleAction(ActionHandler.ACTION_DISMISS);
+                        }
+                        break;
+                    case KEY_ONGOING_NOTIFICATION:
+                        actions.handleAction(ActionHandler.ACTION_NOTIFY);
+                        break;
                 }
             };
 
