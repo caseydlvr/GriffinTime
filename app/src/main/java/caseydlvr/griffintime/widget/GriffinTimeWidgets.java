@@ -23,7 +23,7 @@ public class GriffinTimeWidgets {
         mAppWidgetManager = appWidgetManager;
     }
 
-    public void updateWidgets(int[] appWidgetIds, GriffinTime currentTime) {
+    public void update(int[] appWidgetIds, GriffinTime currentTime) {
         RemoteViews widgetViews = buildWidgetViews(currentTime);
 
         for (int id : appWidgetIds) {
@@ -31,11 +31,11 @@ public class GriffinTimeWidgets {
         }
     }
 
-    public void updateWidgets(GriffinTime currentTime) {
+    public void update(GriffinTime currentTime) {
         int[] widgetIds = mAppWidgetManager
                 .getAppWidgetIds(new ComponentName(mContext, GriffinTimeWidget.class));
 
-        updateWidgets(widgetIds, currentTime);
+        update(widgetIds, currentTime);
     }
 
     private RemoteViews buildWidgetViews(GriffinTime currentTime) {

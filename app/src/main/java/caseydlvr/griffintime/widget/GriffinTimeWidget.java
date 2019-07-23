@@ -14,7 +14,6 @@ public class GriffinTimeWidget extends AppWidgetProvider {
         GriffinTime currentTime =
                 ((GriffinTimeApp) context.getApplicationContext()).getRepository().getCurrentTime();
 
-        new GriffinTimeWidgets(context, appWidgetManager)
-                .updateWidgets(appWidgetIds, currentTime);
+        new GriffinTimeWidgets(context, appWidgetManager).update(appWidgetIds, currentTime);
     }
 }

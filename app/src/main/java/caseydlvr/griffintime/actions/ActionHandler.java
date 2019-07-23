@@ -40,7 +40,7 @@ public class ActionHandler {
 
         new GriffinTimeNotification(mContext).notify(currentTime, mRepository.isOngoing());
         new GriffinTimeWidgets(mContext, AppWidgetManager.getInstance(mContext))
-                .updateWidgets(currentTime);
+                .update(currentTime);
     }
 
     private void handleNotify() {
