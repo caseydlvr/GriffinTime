@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import caseydlvr.griffintime.ActionHandler;
+import caseydlvr.griffintime.actions.ActionHandler;
 import caseydlvr.griffintime.GriffinTimeApp;
 
 public class SettingsActivity extends AppCompatActivity {

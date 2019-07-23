@@ -1,8 +1,11 @@
-package caseydlvr.griffintime;
+package caseydlvr.griffintime.actions;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+
+import caseydlvr.griffintime.GriffinTimeApp;
+import caseydlvr.griffintime.actions.ActionHandler;
 
 public class GriffinTimeActionReceiver extends BroadcastReceiver {
     @Override

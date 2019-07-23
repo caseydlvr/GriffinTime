@@ -31,7 +31,7 @@
                 <category android:name="android.intent.category.PREFERENCE"/>
             </intent-filter>
         </activity>
-        <receiver android:name=".GriffinTimeActionReceiver">
+        <receiver android:name=".actions.GriffinTimeActionReceiver">
             <intent-filter>
                 <action android:name="caseydlvr.griffintime.action.NEXT"/>
             </intent-filter>

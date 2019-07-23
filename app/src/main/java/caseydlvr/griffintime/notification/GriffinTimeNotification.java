@@ -10,9 +10,9 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
-import caseydlvr.griffintime.ActionHandler;
+import caseydlvr.griffintime.actions.ActionHandler;
 import caseydlvr.griffintime.model.GriffinTime;
-import caseydlvr.griffintime.GriffinTimeActionReceiver;
+import caseydlvr.griffintime.actions.GriffinTimeActionReceiver;
 import caseydlvr.griffintime.ui.MainActivity;
 import caseydlvr.griffintime.R;
 

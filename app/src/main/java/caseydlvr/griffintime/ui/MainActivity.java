@@ -12,7 +12,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import caseydlvr.griffintime.ActionHandler;
+import caseydlvr.griffintime.actions.ActionHandler;
 import caseydlvr.griffintime.GriffinTimeApp;
 import caseydlvr.griffintime.data.GriffinTimeRepository;
 import caseydlvr.griffintime.model.GriffinTime;

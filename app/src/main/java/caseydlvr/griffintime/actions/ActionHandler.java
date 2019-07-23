@@ -1,4 +1,4 @@
-package caseydlvr.griffintime;
+package caseydlvr.griffintime.actions;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Context;

@@ -7,8 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 
-import caseydlvr.griffintime.ActionHandler;
-import caseydlvr.griffintime.GriffinTimeActionReceiver;
+import caseydlvr.griffintime.actions.ActionHandler;
+import caseydlvr.griffintime.actions.GriffinTimeActionReceiver;
 import caseydlvr.griffintime.R;
 import caseydlvr.griffintime.model.GriffinTime;
 import caseydlvr.griffintime.ui.MainActivity;
