@@ -1,5 +1,6 @@
 package caseydlvr.griffintime;
 
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 
 import caseydlvr.griffintime.data.GriffinTimeRepository;
@@ -38,7 +39,8 @@ public class ActionHandler {
         GriffinTime currentTime = mRepository.next();
 
         new GriffinTimeNotification(mContext).notify(currentTime, mRepository.isOngoing());
-        new GriffinTimeWidgets(mContext).updateAll(currentTime);
+        new GriffinTimeWidgets(mContext, AppWidgetManager.getInstance(mContext))
+                .updateWidgets(currentTime);
     }
 
     private void handleNotify() {
