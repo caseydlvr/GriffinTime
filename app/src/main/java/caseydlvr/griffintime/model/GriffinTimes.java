@@ -25,10 +25,6 @@ public class GriffinTimes {
         mCurrentTime = 0;
     }
 
-    public GriffinTimes(int currentTime) {
-        mCurrentTime = currentTime;
-    }
-
     public GriffinTime next() {
         if (mCurrentTime == griffinTimes.length - 1) {
             mCurrentTime = 0;
@@ -46,10 +42,6 @@ public class GriffinTimes {
 
     public int getCurrentInt() {
         return mCurrentTime;
-    }
-
-    public GriffinTime get(int i) {
-        return griffinTimes[i];
     }
 
     public void setCurrentTime(int i) {
