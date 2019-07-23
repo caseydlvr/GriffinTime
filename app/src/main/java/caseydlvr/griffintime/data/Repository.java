@@ -3,12 +3,12 @@ package caseydlvr.griffintime.data;
 import caseydlvr.griffintime.model.GriffinTime;
 import caseydlvr.griffintime.model.GriffinTimes;
 
-public class GriffinTimeRepository {
+public class Repository {
 
     private GriffinTimes mGriffinTimes;
     private GriffinTimeStorage mGriffinTimeStorage;
 
-    public GriffinTimeRepository(GriffinTimes griffinTimes, GriffinTimeStorage griffinTimeStorage) {
+    public Repository(GriffinTimes griffinTimes, GriffinTimeStorage griffinTimeStorage) {
         mGriffinTimes = griffinTimes;
         mGriffinTimeStorage = griffinTimeStorage;
 

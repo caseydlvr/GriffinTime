@@ -3,7 +3,7 @@ package caseydlvr.griffintime.actions;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 
-import caseydlvr.griffintime.data.GriffinTimeRepository;
+import caseydlvr.griffintime.data.Repository;
 import caseydlvr.griffintime.model.GriffinTime;
 import caseydlvr.griffintime.notification.GriffinTimeNotification;
 import caseydlvr.griffintime.widget.GriffinTimeWidgets;
@@ -14,9 +14,9 @@ public class ActionHandler {
     public static final String ACTION_NEXT = "caseydlvr.griffintime.action.NEXT";
 
     private Context mContext;
-    private GriffinTimeRepository mRepository;
+    private Repository mRepository;
 
-    public ActionHandler(Context context, GriffinTimeRepository repository) {
+    public ActionHandler(Context context, Repository repository) {
         mContext = context;
         mRepository = repository;
     }

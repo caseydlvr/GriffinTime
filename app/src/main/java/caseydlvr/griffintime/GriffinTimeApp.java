@@ -3,21 +3,21 @@ package caseydlvr.griffintime;
 import android.app.Application;
 
 import caseydlvr.griffintime.actions.ActionHandler;
-import caseydlvr.griffintime.data.GriffinTimeRepository;
+import caseydlvr.griffintime.data.Repository;
 import caseydlvr.griffintime.data.SharedPreferencesStorage;
 import caseydlvr.griffintime.model.GriffinTimes;
 import caseydlvr.griffintime.notification.GriffinTimeNotification;
 
 public class GriffinTimeApp extends Application {
 
-    GriffinTimeRepository mRepository;
+    Repository mRepository;
     ActionHandler mActionHandler;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        mRepository = new GriffinTimeRepository(
+        mRepository = new Repository(
                 new GriffinTimes(),
                 new SharedPreferencesStorage(this)
         );
@@ -26,7 +26,7 @@ public class GriffinTimeApp extends Application {
         initNotification();
     }
 
-    public GriffinTimeRepository getRepository() {
+    public Repository getRepository() {
         return mRepository;
     }
 

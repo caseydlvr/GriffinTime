@@ -14,13 +14,13 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import caseydlvr.griffintime.actions.ActionHandler;
 import caseydlvr.griffintime.GriffinTimeApp;
-import caseydlvr.griffintime.data.GriffinTimeRepository;
+import caseydlvr.griffintime.data.Repository;
 import caseydlvr.griffintime.model.GriffinTime;
 import caseydlvr.griffintime.R;
 
 public class MainActivity extends AppCompatActivity {
 
-    GriffinTimeRepository mRepository;
+    Repository mRepository;
 
     @BindView(R.id.timeText) TextView mTimeText;
     @BindView(R.id.nextText) TextView mNextText;
