@@ -12,7 +12,7 @@ import android.os.Build;
 import androidx.core.app.NotificationCompat;
 import caseydlvr.griffintime.actions.ActionHandler;
 import caseydlvr.griffintime.model.GriffinTime;
-import caseydlvr.griffintime.actions.GriffinTimeActionReceiver;
+import caseydlvr.griffintime.actions.ActionReceiver;
 import caseydlvr.griffintime.ui.MainActivity;
 import caseydlvr.griffintime.R;
 
@@ -71,7 +71,7 @@ public class GriffinTimeNotification {
     }
 
     private PendingIntent buildNextPendingIntent() {
-        Intent nextIntent = new Intent(mContext, GriffinTimeActionReceiver.class);
+        Intent nextIntent = new Intent(mContext, ActionReceiver.class);
         nextIntent.setAction(ActionHandler.ACTION_NEXT);
 
         return PendingIntent.getBroadcast(

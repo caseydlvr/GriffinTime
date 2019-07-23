@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 
 import caseydlvr.griffintime.actions.ActionHandler;
-import caseydlvr.griffintime.actions.GriffinTimeActionReceiver;
+import caseydlvr.griffintime.actions.ActionReceiver;
 import caseydlvr.griffintime.R;
 import caseydlvr.griffintime.model.GriffinTime;
 import caseydlvr.griffintime.ui.MainActivity;
@@ -67,7 +67,7 @@ public class GriffinTimeWidgets {
     }
 
     private PendingIntent buildNextTimePendingIntent() {
-        Intent nextIntent = new Intent(mContext, GriffinTimeActionReceiver.class);
+        Intent nextIntent = new Intent(mContext, ActionReceiver.class);
         nextIntent.setAction(ActionHandler.ACTION_NEXT);
 
         return PendingIntent.getBroadcast(
