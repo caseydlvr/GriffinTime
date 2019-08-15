@@ -35,9 +35,6 @@ public class GriffinTimeApp extends Application {
     }
 
     private void initNotification() {
-        if (mRepository.useNotification()) {
-            new GriffinTimeNotification(this)
-                    .notify(mRepository.getCurrentTime(), mRepository.isOngoing());
-        }
+        new GriffinTimeNotification(this, mRepository).notifyCurrentTime();
     }
 }

@@ -11,6 +11,7 @@ import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 import caseydlvr.griffintime.actions.ActionHandler;
+import caseydlvr.griffintime.data.Repository;
 import caseydlvr.griffintime.model.GriffinTime;
 import caseydlvr.griffintime.actions.ActionReceiver;
 import caseydlvr.griffintime.ui.MainActivity;
@@ -26,9 +27,11 @@ public class GriffinTimeNotification {
     private final NotificationCompat.Builder mBuilder;
     private final NotificationManager mNotifyMgr;
     private final Context mContext;
+    private final Repository mRepository;
 
-    public GriffinTimeNotification(Context context) {
+    public GriffinTimeNotification(Context context, Repository repository) {
         mContext = context;
+        mRepository = repository;
         mNotifyMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         initNotificationChannel();
         mBuilder = initNotification();
@@ -38,11 +41,15 @@ public class GriffinTimeNotification {
         mNotifyMgr.cancel(NOTIFICATION_ID);
     }
 
-    public void notify(GriffinTime currentTime, boolean isOngoing) {
+    public void notifyCurrentTime() {
+        if (!mRepository.useNotification()) return;
+
+        GriffinTime currentTime = mRepository.getCurrentTime();
+
         mBigTextStyle.bigText(currentTime.getNextCriteria());
         mBuilder.setContentTitle("It's " + currentTime.getTime())
                 .setContentText(currentTime.getNextCriteria())
-                .setOngoing(isOngoing);
+                .setOngoing(mRepository.isOngoing());
 
         mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
     }

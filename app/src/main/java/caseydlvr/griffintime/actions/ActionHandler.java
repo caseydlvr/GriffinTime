@@ -38,17 +38,17 @@ public class ActionHandler {
     private void handleNext() {
         GriffinTime currentTime = mRepository.next();
 
-        new GriffinTimeNotification(mContext).notify(currentTime, mRepository.isOngoing());
+        new GriffinTimeNotification(mContext, mRepository).notifyCurrentTime();
         new GriffinTimeWidgets(mContext, AppWidgetManager.getInstance(mContext))
                 .update(currentTime);
     }
 
     private void handleNotify() {
-        new GriffinTimeNotification(mContext)
-                .notify(mRepository.getCurrentTime(), mRepository.isOngoing());
+        new GriffinTimeNotification(mContext, mRepository)
+                .notifyCurrentTime();
     }
 
     private void handleDismiss() {
-        new GriffinTimeNotification(mContext).dismiss();
+        new GriffinTimeNotification(mContext, mRepository).dismiss();
     }
 }
