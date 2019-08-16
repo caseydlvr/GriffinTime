@@ -7,4 +7,5 @@ The app is designed to be exist and function solely as a notification (though th
 
 ## Special branches
 - master: current production release on store
+- beta: current beta release on store
 - develop: CI development branch
