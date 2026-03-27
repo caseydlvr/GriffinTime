@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="pref_show_notification"
-        android:title="@string/pref_show_notification_title"
-        android:summary="@string/pref_show_notification_summary"/>
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="pref_ongoing_notification"
-        android:title="@string/pref_ongoing_notification_title"
-        android:summary="@string/pref_ongoing_notification_summary"/>
+    <SwitchPreferenceCompat
+        app:defaultValue="true"
+        app:key="pref_show_notification"
+        app:title="@string/pref_show_notification_title"
+        app:summary="@string/pref_show_notification_summary"/>
+    <SwitchPreferenceCompat
+        app:defaultValue="true"
+        app:key="pref_ongoing_notification"
+        app:title="@string/pref_ongoing_notification_title"
+        app:summary="@string/pref_ongoing_notification_summary"/>
 
 </PreferenceScreen>
