@@ -17,6 +17,7 @@
 /.idea/runConfigurations.xml
 /.idea/compiler.xml
 /.idea/modules.xml
+/.idea/deviceManager.xml
 /build
 **/build/
 /captures
