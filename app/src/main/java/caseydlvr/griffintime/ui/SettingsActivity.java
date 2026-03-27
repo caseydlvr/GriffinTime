@@ -2,9 +2,11 @@ package caseydlvr.griffintime.ui;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
+
 import caseydlvr.griffintime.actions.ActionHandler;
 import caseydlvr.griffintime.GriffinTimeApp;
 
@@ -35,9 +37,9 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);;
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        getFragmentManager().beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new SettingsFragment())
                 .commit();
     }

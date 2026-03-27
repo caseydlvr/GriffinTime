@@ -7,9 +7,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
+
 import caseydlvr.griffintime.actions.ActionHandler;
 import caseydlvr.griffintime.data.Repository;
 import caseydlvr.griffintime.model.GriffinTime;
@@ -55,14 +56,12 @@ public class GriffinTimeNotification {
     }
 
     private void initNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                    NOTIFICATION_CHANNEL_ID,
-                    NOTIFICATION_CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_MIN);
-            channel.enableVibration(false);
-            mNotifyMgr.createNotificationChannel(channel);
-        }
+        NotificationChannel channel = new NotificationChannel(
+                NOTIFICATION_CHANNEL_ID,
+                NOTIFICATION_CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_MIN);
+        channel.enableVibration(false);
+        mNotifyMgr.createNotificationChannel(channel);
     }
 
     private NotificationCompat.Builder initNotification() {
@@ -73,7 +72,7 @@ public class GriffinTimeNotification {
                 .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setCategory(Notification.CATEGORY_STATUS)
                 .setStyle(mBigTextStyle)
-                .setColor(mContext.getResources().getColor(R.color.primaryLightColor))
+                .setColor(ContextCompat.getColor(mContext, R.color.primaryLightColor))
                 .setContentIntent(buildResultPendingIntent());
     }
 
@@ -81,38 +80,21 @@ public class GriffinTimeNotification {
         Intent nextIntent = new Intent(mContext, ActionReceiver.class);
         nextIntent.setAction(ActionHandler.ACTION_NEXT);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return PendingIntent.getBroadcast(
-                    mContext,
-                    0,
-                    nextIntent,
-                    PendingIntent.FLAG_IMMUTABLE
-            );
-        } else {
-            return PendingIntent.getBroadcast(
-                    mContext,
-                    0,
-                    nextIntent,
-                    0
-            );
-        }
+        return PendingIntent.getBroadcast(
+                mContext,
+                0,
+                nextIntent,
+                PendingIntent.FLAG_IMMUTABLE
+        );
     }
 
     private PendingIntent buildResultPendingIntent() {
         Intent resultIntent = new Intent(mContext, MainActivity.class);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return PendingIntent.getActivity(
-                    mContext,
-                    0,
-                    resultIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        } else {
-            return PendingIntent.getActivity(
-                    mContext,
-                    0,
-                    resultIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-        }
+        return PendingIntent.getActivity(
+                mContext,
+                0,
+                resultIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 }

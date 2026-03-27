@@ -1,16 +1,14 @@
 package caseydlvr.griffintime.ui;
 
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
-import androidx.annotation.Nullable;
+
+import androidx.preference.PreferenceFragmentCompat;
+
 import caseydlvr.griffintime.R;
 
-
-public class SettingsFragment extends PreferenceFragment {
+public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        addPreferencesFromResource(R.xml.preferences);
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        setPreferencesFromResource(R.xml.preferences, rootKey);
     }
 }
